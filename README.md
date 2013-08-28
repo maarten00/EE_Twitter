@@ -69,6 +69,10 @@ Set a prefix to use for the tags. This turns `{id}` into `{yourprefix:id}`. Defa
 
 Set a prefix to use for the user tags (`{name}`, `{screen_name}`, `{location}`, `{description}`, `{profile_image_url}`). Defaults to what `prefix` is set to.
 
+`imagesprefix`
+
+Set a prefix to use for the image tags. (`{image}`, `{display_url}`, `{[size]}`, `{[size]_https}`, `{[size]_w}`, `{[size]_h}`, `{[size]_resize}`) Defaults to no prefix. 
+
 `images_only`
 
 Only return tweets that contain images. Options `yes`, `no`. Defaults to `no`
