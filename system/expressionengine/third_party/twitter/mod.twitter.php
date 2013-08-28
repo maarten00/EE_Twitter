@@ -224,7 +224,12 @@ class Twitter
 								{
 									$replace[]  = "<a target='".$this->target."' title='{$info['expanded_url']}' href='{$info['url']}'>{$displayurl}</a>";
 								}
-								if(isset($info['type']) && $info['type'] == 'photo')
+                                //If images_only is TRUE, remove url's from the tweet text.
+                                else
+                                {
+                                    $replace[] = "";
+                                }
+                                if(isset($info['type']) && $info['type'] == 'photo')
 								{
 									$image = array(
 										'image' => $info['media_url']
