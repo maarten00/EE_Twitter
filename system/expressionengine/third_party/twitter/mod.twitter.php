@@ -70,9 +70,10 @@ class Twitter
 		$screen_name		= $this->EE->TMPL->fetch_param('screen_name');
 		$prefix				= $this->EE->TMPL->fetch_param('prefix', '');
 		$userprefix			= $this->EE->TMPL->fetch_param('userprefix', NULL);
+        $imagesprefix       = $this->EE->TMPL->fetch_param('imagesprefix', '');
 		$include_rts		= ($this->EE->TMPL->fetch_param('retweets', 'yes') == 'yes') ? TRUE : FALSE;
 		$exclude_replies	= ($this->EE->TMPL->fetch_param('replies', 'yes') == 'yes') ? FALSE : TRUE;
-		$images_only     = ($this->EE->TMPL->fetch_param('images_only', "no") == 'yes') ? TRUE : FALSE;
+		$images_only        = ($this->EE->TMPL->fetch_param('images_only', "no") == 'yes') ? TRUE : FALSE;
 
 		if (!$screen_name)
 		{
@@ -97,7 +98,7 @@ class Twitter
 			return;
 		}
 
-		$return_data = $this->render_tweets($statuses, $prefix, $userprefix, $images_only);
+		$return_data = $this->render_tweets($statuses, $prefix, $userprefix, $imagesprefix, $images_only);
 		return $return_data;
 	}
 
@@ -108,11 +109,12 @@ class Twitter
 		$this->limit		= $this->EE->TMPL->fetch_param('limit', $this->limit);
 		$this->use_stale	= $this->EE->TMPL->fetch_param('use_stale_cache', 'yes');
 		$this->target		= $this->EE->TMPL->fetch_param('target', '');
-		$query = $this->EE->TMPL->fetch_param('query');
-		$prefix = $this->EE->TMPL->fetch_param('prefix', '');
-		$userprefix = $this->EE->TMPL->fetch_param('userprefix', NULL);
+		$query              = $this->EE->TMPL->fetch_param('query');
+		$prefix             = $this->EE->TMPL->fetch_param('prefix', '');
+		$userprefix         = $this->EE->TMPL->fetch_param('userprefix', NULL);
+        $imagesprefix       = $this->EE->TMPL->fetch_param('imagesprefix', '');
 
-		if (!$query)
+        if (!$query)
 		{
 			$this->EE->TMPL->log_item("Parameter query was not provided");
 			return;
@@ -131,14 +133,14 @@ class Twitter
 		$data = $this->_fetch_data($url, $params);
 		$statuses = $data['statuses'];
 
-		return $this->render_tweets($statuses, $prefix, $userprefix);
+		return $this->render_tweets($statuses, $prefix, $userprefix, $imagesprefix);
 	}
 
 	public function script() {
 		return "<script type=\"text/javascript\" src=\"//platform.twitter.com/widgets.js\"></script>";
 	}
 
-	private function render_tweets($statuses, $prefix, $userprefix, $images_only = FALSE) {
+	private function render_tweets($statuses, $prefix, $userprefix, $imagesprefix, $images_only = FALSE) {
 
 
 		if ( ! $statuses)
@@ -155,6 +157,10 @@ class Twitter
 		else if ($userprefix != '') {
 			$userprefix = $userprefix . ':';
 		}
+        if($imagesprefix != '')
+        {
+            $imagesprefix = $imagesprefix . ':';
+        }
 
 		$count = 0;
 
@@ -232,18 +238,18 @@ class Twitter
                                 if(isset($info['type']) && $info['type'] == 'photo')
 								{
 									$image = array(
-										'image' => $info['media_url']
+                                        $imagesprefix .'image' => $info['media_url']
 										);
 									foreach ($info['sizes'] as $size => $sizeval) {
 										$image = array_merge($image,
 											array(
-												'image' => $info['media_url'],
-												'display_url' => $info['expanded_url'],
-												$size => $info['media_url'] . ':' . $size,
-												$size . '_https' => $info['media_url_https'] . ':' . $size,
-												$size . '_w' => $sizeval['w'],
-												$size . '_h' => $sizeval['h'],
-												$size . '_resize' => $sizeval['resize']
+                                                $imagesprefix . 'image' => $info['media_url'],
+                                                $imagesprefix . 'display_url' => $info['expanded_url'],
+                                                $imagesprefix . $size => $info['media_url'] . ':' . $size,
+                                                $imagesprefix . $size . '_https' => $info['media_url_https'] . ':' . $size,
+                                                $imagesprefix . $size . '_w' => $sizeval['w'],
+                                                $imagesprefix . $size . '_h' => $sizeval['h'],
+                                                $imagesprefix . $size . '_resize' => $sizeval['resize']
 												)
 											);
 									}
